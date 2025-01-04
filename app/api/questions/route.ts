@@ -4302,8 +4302,8 @@ function getRandomQuestions(questions: Question[], count: number): Question[] {
 export async function GET() {
   try {
     // 随机抽取20道单选题和20道多选题
-    const selectedSingle = getRandomQuestions(singleChoice, 2);
-    const selectedMultiple = getRandomQuestions(multipleChoice, 2);
+    const selectedSingle = getRandomQuestions(singleChoice, 20);
+    const selectedMultiple = getRandomQuestions(multipleChoice, 20);
 
     // 返回数据，包含分数信息
     return NextResponse.json({ 
