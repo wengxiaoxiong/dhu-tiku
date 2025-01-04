@@ -34,7 +34,7 @@ interface ApiResponse {
 }
 
 const App: React.FC = () => {
-  const [selectedOptions, setSelectedOptions] = useState<{ [key: number]: string[] }>({});
+  const [selectedOptions, setSelectedOptions] = useState<{ [key: string]: string[] }>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [remainingTime, setRemainingTime] = useState(45 * 60);
   const [questions, setQuestions] = useState<QuestionWithFormattedOptions[]>([]);
@@ -95,24 +95,26 @@ const App: React.FC = () => {
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
   };
 
-  const handleOptionSelect = (questionId: number, optionId: string) => {
-    const currentQuestion = questions[currentQuestionIndex];
+  const handleOptionSelect = (question: QuestionWithFormattedOptions, optionId: string) => {
+     const questionKey = `${question.type}-${question.id}`;
+
 
     setSelectedOptions(prev => {
-      if (currentQuestion.type === 'single') {
-        return { ...prev, [questionId]: [optionId] };
+      if (question.type === 'single') {
+        return { ...prev, [questionKey]: [optionId] };
       } else {
-        const currentSelected = prev[questionId] || [];
+        const currentSelected = prev[questionKey] || [];
         const newSelected = currentSelected.includes(optionId)
           ? currentSelected.filter(id => id !== optionId)
           : [...currentSelected, optionId];
-        return { ...prev, [questionId]: newSelected };
+        return { ...prev, [questionKey]: newSelected };
       }
     });
   };
 
-  const isOptionSelected = (questionId: number, optionId: string) => {
-    const selectedForQuestion = selectedOptions[questionId] || [];
+  const isOptionSelected = (question: QuestionWithFormattedOptions, optionId: string) => {
+    const questionKey = `${question.type}-${question.id}`;
+    const selectedForQuestion = selectedOptions[questionKey] || [];
     return selectedForQuestion.includes(optionId);
   };
 
@@ -135,7 +137,8 @@ const App: React.FC = () => {
     const wrongList: (QuestionWithFormattedOptions & { userAnswer: string[] })[] = [];
 
     questions.forEach((question) => {
-      const userAnswer = selectedOptions[question.id] || [];
+      const questionKey = `${question.type}-${question.id}`;
+      const userAnswer = selectedOptions[questionKey] || [];
       const isCorrect = arraysEqual(userAnswer, question.answer);
 
       if (isCorrect) {
@@ -230,14 +233,14 @@ const App: React.FC = () => {
           {currentQuestion.options.map((option) => (
             <button
               key={`${currentQuestion.type}-${currentQuestion.id}-${option.id}`}
-              className={`w-full p-4 rounded-lg border transition-all duration-200 ${isOptionSelected(currentQuestion.id, option.id)
+              className={`w-full p-4 rounded-lg border transition-all duration-200 ${isOptionSelected(currentQuestion, option.id)
                   ? 'border-blue-500 bg-blue-50'
                   : 'border-gray-200 bg-white hover:border-blue-200'
                 }`}
-              onClick={() => handleOptionSelect(currentQuestion.id, option.id)}
+              onClick={() => handleOptionSelect(currentQuestion, option.id)}
             >
               <div className="flex items-start">
-                <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm ${isOptionSelected(currentQuestion.id, option.id)
+                <span className={`flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-sm ${isOptionSelected(currentQuestion, option.id)
                     ? 'bg-blue-500 text-white'
                     : 'bg-gray-100 text-gray-600'
                   }`}>
