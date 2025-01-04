@@ -151,14 +151,19 @@ const App: React.FC = () => {
     setShowResult(true);
   };
 
-
   const arraysEqual = (userAnswer: string[], correctAnswer: string) => {
-    // 去除空格并转为数组
     const correctAnswerArray = correctAnswer.replace(/\s+/g, '').split('');
-    // 排序后比较数组内容
     return (
       userAnswer.sort().join('') === correctAnswerArray.sort().join('')
     );
+  };
+
+  const getCorrectAnswerText = (question: QuestionWithFormattedOptions) => {
+    const correctAnswers = question.answer.replace(/\s+/g, '').split('');
+    return question.options
+      .filter(opt => correctAnswers.includes(opt.id))
+      .map(opt => opt.text)
+      .join('\n');
   };
 
   if (showResult) {
@@ -172,12 +177,13 @@ const App: React.FC = () => {
               <div key={`${question.type}-${question.id}`} className="border p-4 rounded-lg">
                 <p className="font-medium">{question.question}</p>
                 <p className="text-red-500">
-                  你的答案：{(question.userAnswer || []).join('') || '未作答'}
+                  你的答案：{(question.userAnswer || []).map(id => 
+                    question.options.find(opt => opt.id === id)?.text || id
+                  ).join('，') || '未作答'}
                 </p>
                 <p className="text-green-500">
-                  正确答案：{question.answer.replace(/\s+/g, '')}
+                  正确答案：{getCorrectAnswerText(question)}
                 </p>
-
               </div>
             ))}
           </div>
