@@ -4301,6 +4301,8 @@ function getRandomQuestions(questions: Question[], count: number): Question[] {
 
 export async function GET() {
   try {
+
+    console.log(`当前时间：${new Date().toLocaleString()} - 用户获取题目`)
     // 随机抽取20道单选题和20道多选题
     const selectedSingle = getRandomQuestions(singleChoice, 20);
     const selectedMultiple = getRandomQuestions(multipleChoice, 20);
