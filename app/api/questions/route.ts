@@ -2391,8 +2391,8 @@ const singleChoice: Question[] = [
     {
       "id": 209,
       "type": "single",
-      "question": "作风问题核心是A．选人用人问题\nB．政治路线问题\nC．党同人民群众的关系问题\nD．思想建设",
-      "options": [],
+      "question": "作风问题核心是",
+      "options": ["选人用人问题", "政治路线问题", "党同人民群众的关系问题", "思想建设"],
       "answer": "C"
     },
     {
