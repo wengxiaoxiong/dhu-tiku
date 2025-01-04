@@ -41,6 +41,7 @@ const App: React.FC = () => {
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
   const [wrongQuestions, setWrongQuestions] = useState<(QuestionWithFormattedOptions & { userAnswer: string[] })[]>([]);
+  const [showAnswer, setShowAnswer] = useState(false);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -118,12 +119,14 @@ const App: React.FC = () => {
   const handlePrevQuestion = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1);
+      setShowAnswer(false);
     }
   };
 
   const handleNextQuestion = () => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
+      setShowAnswer(false);
     }
   };
 
@@ -245,6 +248,13 @@ const App: React.FC = () => {
             </button>
           ))}
         </div>
+
+        {showAnswer && (
+          <div className="mt-6 p-4 bg-green-50 rounded-lg">
+            <p className="text-green-600 font-medium">正确答案：</p>
+            <p className="text-green-600">{getCorrectAnswerText(currentQuestion)}</p>
+          </div>
+        )}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t">
@@ -259,15 +269,23 @@ const App: React.FC = () => {
           >
             上一题
           </button>
-          <button
-            onClick={currentQuestionIndex === questions.length - 1 ? handleSubmit : handleNextQuestion}
-            className={`px-6 py-2 rounded-lg ${currentQuestionIndex === questions.length - 1
-                ? 'bg-green-500 text-white'
-                : 'bg-blue-500 text-white'
-              }`}
-          >
-            {currentQuestionIndex === questions.length - 1 ? '提交' : '下一题'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowAnswer(!showAnswer)}
+              className="px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200"
+            >
+              {showAnswer ? '隐藏答案' : '查看答案'}
+            </button>
+            <button
+              onClick={currentQuestionIndex === questions.length - 1 ? handleSubmit : handleNextQuestion}
+              className={`px-6 py-2 rounded-lg ${currentQuestionIndex === questions.length - 1
+                  ? 'bg-green-500 text-white'
+                  : 'bg-blue-500 text-white'
+                }`}
+            >
+              {currentQuestionIndex === questions.length - 1 ? '提交' : '下一题'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
