@@ -108,7 +108,14 @@ const App: React.FC = () => {
 
     const saveWrongQuestions = (questions: (QuestionWithFormattedOptions & { userAnswer: string[] })[]) => {
         try {
-            localStorage.setItem(WRONG_QUESTIONS_STORAGE_KEY, JSON.stringify(questions));
+            const existingQuestions = loadStoredWrongQuestions();
+            const newQuestions = questions.filter(newQuestion => 
+                !existingQuestions.some(existingQuestion => 
+                    existingQuestion.id === newQuestion.id && existingQuestion.type === newQuestion.type
+                )
+            );
+            const updatedQuestions = [...existingQuestions, ...newQuestions];
+            localStorage.setItem(WRONG_QUESTIONS_STORAGE_KEY, JSON.stringify(updatedQuestions));
         } catch (error) {
             console.error("Failed to save wrong questions to localStorage", error);
         }
