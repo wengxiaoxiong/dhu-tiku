@@ -22,12 +22,12 @@ def parse_questions(input_text):
         question_id = int(question_match.group(1))
         question_content = question_match.group(2).strip()
         
-        # 在括号中查找答案
+        # 提取答案并将括号内容替换为空
         answer_match = re.search(r'[\(（]([A-Z,]+)[\)）]', question_content)
         if answer_match:
             correct_answers = answer_match.group(1).split(',')
-            # 保留括号后内容
-            question_content = question_content[:answer_match.start()].strip() + question_content[answer_match.end():].strip()
+            # 替换括号内的答案为空，但保留括号
+            question_content = re.sub(r'[\(（][A-Z,]+[\)）]', '()', question_content)
         else:
             continue
         
